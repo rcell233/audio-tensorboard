@@ -22,7 +22,7 @@ setup(
     description='现代化的TensorBoard日志可视化工具，支持音频、图像和标量数据',
     long_description=read_file('README.md'),
     long_description_content_type='text/markdown',
-    url='https://github.com/yourusername/AudioTensorBoard',
+    url='https://github.com/rcell233/audio-tensorboard',
     packages=find_packages(),
     include_package_data=True,
     package_data={
@@ -51,8 +51,8 @@ setup(
     python_requires='>=3.7',
     keywords='tensorboard visualization machine-learning deep-learning audio',
     project_urls={
-        'Bug Reports': 'https://github.com/yourusername/AudioTensorBoard/issues',
-        'Source': 'https://github.com/yourusername/AudioTensorBoard',
+        'Bug Reports': 'https://github.com/rcell233/audio-tensorboard/issues',
+        'Source': 'https://github.com/rcell233/audio-tensorboard',
     },
 )
 
