@@ -273,21 +273,22 @@
                             </div>
 
                             <!-- 音频播放器 -->
-                            <div class="bg-gray-100 rounded-lg p-4 mb-3">
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 mb-3 shadow-sm border border-gray-200">
                                 <audio controls 
                                        controlslist="nodownload"
                                        :src="audioData[tag]?.[audioIndices[tag]]?.data"
-                                       class="w-full"
+                                       class="w-full mb-3"
+                                       style="filter: saturate(0.8) hue-rotate(230deg);"
                                        x-show="audioData[tag]?.[audioIndices[tag]]">
                                 </audio>
                                 <a :href="audioData[tag]?.[audioIndices[tag]]?.data"
                                    :download="tag.replace(/\//g, '_') + '_' + (audioData[tag]?.[audioIndices[tag]]?.step || 0) + '.wav'"
-                                   class="mt-2 inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors"
+                                   class="group relative w-full inline-flex items-center justify-center px-5 py-2.5 bg-white hover:bg-gray-50 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-700 text-sm font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
                                    x-show="audioData[tag]?.[audioIndices[tag]]">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
                                     </svg>
-                                    下载音频
+                                    <span class="group-hover:translate-x-0.5 transition-transform">下载音频文件</span>
                                 </a>
                             </div>
 
