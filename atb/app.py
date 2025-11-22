@@ -7,21 +7,58 @@ TensorBoard 可视化 Web 应用
 
 import os
 import base64
+import threading
+import time
 from flask import Flask, render_template, jsonify
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
 # 全局变量存储EventAccumulator
 event_acc = None
 log_dir = None
+reload_thread = None
+stop_reload = threading.Event()
 
 
-def create_app(event_file_path):
-    """创建Flask应用实例"""
+def reload_worker(interval=10):
+    """后台线程：定期重新加载TensorBoard日志
+    
+    Args:
+        interval: 刷新间隔（秒），默认10秒
+    """
+    global event_acc
+    print(f"🔄 自动刷新已启用：每 {interval} 秒增量检查新日志")
+    
+    while not stop_reload.is_set():
+        # 等待指定的间隔时间，但允许被中断
+        if stop_reload.wait(interval):
+            break
+        
+        try:
+            if event_acc is not None:
+                print(f"🔄 正在重新加载日志... (增量更新)")
+                start_time = time.time()
+                event_acc.Reload()
+                elapsed = time.time() - start_time
+                print(f"✅ 日志重新加载完成 (耗时: {elapsed:.2f}秒)")
+        except Exception as e:
+            print(f"⚠️ 重新加载日志时出错: {e}")
+
+
+def create_app(event_file_path, reload_interval=10):
+    """创建Flask应用实例
+    
+    Args:
+        event_file_path: TensorBoard事件文件路径
+        reload_interval: 自动刷新间隔（秒），默认10秒
+    """
     app = Flask(__name__, 
                 template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
     
     # 初始化EventAccumulator
     init_event_accumulator(event_file_path)
+    
+    # 启动后台刷新线程
+    start_reload_thread(interval=reload_interval)
     
     @app.route('/')
     def index():
@@ -99,6 +136,34 @@ def init_event_accumulator(path):
     log_dir = path
     event_acc = EventAccumulator(path)
     event_acc.Reload()
+
+
+def start_reload_thread(interval=10):
+    """启动后台刷新线程
+    
+    Args:
+        interval: 刷新间隔（秒），默认10秒
+    """
+    global reload_thread
+    if reload_thread is None or not reload_thread.is_alive():
+        stop_reload.clear()
+        reload_thread = threading.Thread(
+            target=reload_worker, 
+            args=(interval,),
+            daemon=True,
+            name="LogReloadThread"
+        )
+        reload_thread.start()
+
+
+def stop_reload_thread():
+    """停止后台刷新线程"""
+    global reload_thread
+    if reload_thread is not None and reload_thread.is_alive():
+        print("🛑 正在停止自动刷新线程...")
+        stop_reload.set()
+        reload_thread.join(timeout=5)
+        print("✅ 自动刷新线程已停止")
 
 
 def find_event_file(directory):

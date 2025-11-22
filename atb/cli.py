@@ -7,7 +7,8 @@ AudioTensorBoard 命令行接口
 import sys
 import socket
 import argparse
-from .app import create_app, find_event_file
+import atexit
+from .app import create_app, find_event_file, stop_reload_thread
 
 
 def is_port_available(host, port):
@@ -47,6 +48,9 @@ def main():
   
   # 指定主机地址为 0.0.0.0 以便外网访问（自动选择端口）
   atb hifigan_logs/ --host 0.0.0.0
+  
+  # 自定义日志刷新间隔为30秒
+  atb hifigan_logs/ --reload-interval 30
         """
     )
     
@@ -75,6 +79,14 @@ def main():
     )
     
     parser.add_argument(
+        '--reload-interval',
+        type=int,
+        default=10,
+        metavar='SECONDS',
+        help='自动刷新日志的间隔时间（秒），默认: 10秒'
+    )
+    
+    parser.add_argument(
         '--version',
         action='version',
         version='%(prog)s 0.1.0'
@@ -96,10 +108,13 @@ def main():
     
     # 创建Flask应用
     try:
-        app = create_app(event_file)
+        app = create_app(event_file, reload_interval=args.reload_interval)
     except Exception as e:
         print(f"❌ 错误: 无法加载事件文件: {e}", file=sys.stderr)
         sys.exit(1)
+    
+    # 注册退出时的清理函数
+    atexit.register(stop_reload_thread)
     
     print("✅ 事件文件加载完成")
     
@@ -126,6 +141,7 @@ def main():
     print("🚀 AudioTensorBoard 服务器已启动")
     print("="*60)
     print(f"📊 访问地址: http://{args.host}:{port}")
+    print(f"🔄 自动刷新: 已启用 (每{args.reload_interval}秒增量更新日志)")
     print("💡 按 Ctrl+C 停止服务器")
     print("="*60 + "\n")
     
