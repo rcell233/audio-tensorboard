@@ -1,6 +1,6 @@
 # AudioTensorBoard
 
-现代化的 TensorBoard 日志可视化工具，优化音频相关的显示。由cursor自动化生成，优化中。。。
+简易的TensorBoard 日志可视化工具，优化音频相关的显示。由cursor自动化生成，优化中。。。
 
 ## 安装
 
