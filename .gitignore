@@ -48,7 +48,3 @@ output_csv/
 hifigan_logs/
 *.tfevents.*
 
-# Old files (before packaging)
-app.py
-templates/index.html
-simple_tensorboard_parser.py
