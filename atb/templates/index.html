@@ -44,16 +44,7 @@
         }
         .chart-container {
             position: relative;
-            height: 280px;
-        }
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 3px solid #667eea;
-            display: inline-block;
+            height: 200px;
         }
     </style>
 </head>
@@ -61,59 +52,53 @@
     <div x-data="app()" x-init="init()">
         <!-- 顶部导航栏 -->
         <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
-            <div class="container mx-auto px-6 py-4">
+            <div class="container mx-auto px-4 py-2.5">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
-                        <div>
-                            <h1 class="text-2xl font-bold">TensorBoard 可视化</h1>
-                            <p class="text-sm text-white/80">训练日志分析与展示</p>
-                        </div>
+                        <h1 class="text-lg font-bold">TensorBoard 可视化</h1>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="bg-white/20 px-3 py-1 rounded-full text-sm">版本: {{ file_version }}</span>
-                    </div>
+                    <span class="bg-white/20 px-2.5 py-0.5 rounded-full text-xs">v{{ file_version }}</span>
                 </div>
             </div>
         </nav>
 
         <!-- 标签页导航 -->
-        <div class="bg-white border-b sticky top-[72px] z-40 shadow-sm">
-            <div class="container mx-auto px-6">
-                <div class="flex space-x-8">
+        <div class="bg-white border-b sticky top-[45px] z-40 shadow-sm">
+            <div class="container mx-auto px-4">
+                <div class="flex space-x-6">
                     <button @click="currentTab = 'scalars'" 
-                            :class="currentTab === 'scalars' ? 'border-b-4 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-800'"
-                            class="py-4 font-semibold transition-colors">
-                        📊 标量数据 (<span x-text="scalarTags.length"></span>)
+                            :class="currentTab === 'scalars' ? 'border-b-3 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-800'"
+                            class="py-2.5 text-sm font-semibold transition-colors border-b-3"
+                            style="border-bottom-width: 3px;">
+                        📊 标量 (<span x-text="scalarTags.length"></span>)
                     </button>
                     <button @click="currentTab = 'images'" 
-                            :class="currentTab === 'images' ? 'border-b-4 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-800'"
-                            class="py-4 font-semibold transition-colors">
+                            :class="currentTab === 'images' ? 'border-b-3 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-800'"
+                            class="py-2.5 text-sm font-semibold transition-colors border-b-3"
+                            style="border-bottom-width: 3px;">
                         🖼️ 图像 (<span x-text="imageTags.length"></span>)
                     </button>
                     <button @click="currentTab = 'audio'" 
-                            :class="currentTab === 'audio' ? 'border-b-4 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-800'"
-                            class="py-4 font-semibold transition-colors">
+                            :class="currentTab === 'audio' ? 'border-b-3 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-800'"
+                            class="py-2.5 text-sm font-semibold transition-colors border-b-3"
+                            style="border-bottom-width: 3px;">
                         🔊 音频 (<span x-text="audioTags.length"></span>)
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="container mx-auto px-6 py-8">
+        <div class="container mx-auto px-4 py-4">
             <!-- 标量数据标签页 -->
             <div x-show="currentTab === 'scalars'" 
                  x-transition>
-                <div class="mb-8">
-                    <h2 class="section-title">📊 标量数据</h2>
-                </div>
-                
                 <!-- 标量图表网格 -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                     <template x-for="(tag, index) in scalarTags" :key="tag">
-                        <div class="card p-6" 
+                        <div class="card p-3" 
                              x-data="{ chartInstance: null }"
                              x-init="
                                  const renderChart = () => {
@@ -166,12 +151,7 @@
                                  };
                                  renderChart();
                              ">
-                            <div class="mb-4">
-                                <h3 class="font-semibold text-gray-800 text-sm mb-1" x-text="tag"></h3>
-                                <div class="text-xs text-gray-500" x-show="scalarData[tag]">
-                                    <span x-text="scalarData[tag]?.steps?.length || 0"></span> 个数据点
-                                </div>
-                            </div>
+                            <h3 class="font-semibold text-gray-800 text-xs mb-2 truncate" x-text="tag" :title="tag"></h3>
                             <div class="chart-container">
                                 <canvas></canvas>
                             </div>
@@ -182,58 +162,33 @@
 
             <!-- 图像标签页 -->
             <div x-show="currentTab === 'images'" x-transition>
-                <div class="mb-8">
-                    <h2 class="section-title">🖼️ 图像数据</h2>
-                </div>
-
                 <!-- 图像网格 -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                     <template x-for="tag in imageTags" :key="tag">
-                        <div class="card p-6">
-                            <div class="mb-4">
-                                <h3 class="font-semibold text-gray-800 mb-2" x-text="tag"></h3>
+                        <div class="card p-3">
+                            <div class="mb-2">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <h3 class="font-semibold text-gray-800 text-xs truncate" x-text="tag" :title="tag"></h3>
+                                    <span class="text-xs font-bold text-indigo-600 ml-2 flex-shrink-0" 
+                                          x-text="'#' + (imageData[tag]?.[imageIndices[tag]]?.step || 0)"></span>
+                                </div>
                                 
                                 <!-- Step Slider -->
-                                <div class="mb-4" x-show="imageData[tag]">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <label class="text-xs font-medium text-gray-600">训练步数</label>
-                                        <span class="text-xs font-bold text-indigo-600" 
-                                              x-text="'Step: ' + (imageData[tag]?.[imageIndices[tag]]?.step || 0)"></span>
-                                    </div>
+                                <div x-show="imageData[tag]">
                                     <input type="range" 
                                            x-model="imageIndices[tag]"
                                            :min="0" 
                                            :max="(imageData[tag]?.length || 1) - 1"
                                            class="slider-thumb w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                    <div class="flex justify-between text-xs text-gray-400 mt-1">
-                                        <span>0</span>
-                                        <span x-text="(imageData[tag]?.length || 1) - 1"></span>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- 图像 -->
-                            <div class="bg-gray-100 rounded-lg overflow-hidden min-h-[200px] flex items-center justify-center">
+                            <div class="bg-gray-50 rounded overflow-hidden min-h-[150px] flex items-center justify-center">
                                 <img :src="imageData[tag]?.[imageIndices[tag]]?.data" 
                                      :alt="'Step ' + imageData[tag]?.[imageIndices[tag]]?.step"
                                      class="max-w-full h-auto"
                                      x-show="imageData[tag]?.[imageIndices[tag]]">
-                            </div>
-
-                            <!-- 图像信息 -->
-                            <div class="mt-3 grid grid-cols-3 gap-2 text-xs" x-show="imageData[tag]?.[imageIndices[tag]]">
-                                <div class="bg-gray-50 p-2 rounded text-center">
-                                    <div class="text-gray-500">宽度</div>
-                                    <div class="font-semibold" x-text="imageData[tag]?.[imageIndices[tag]]?.width + 'px'"></div>
-                                </div>
-                                <div class="bg-gray-50 p-2 rounded text-center">
-                                    <div class="text-gray-500">高度</div>
-                                    <div class="font-semibold" x-text="imageData[tag]?.[imageIndices[tag]]?.height + 'px'"></div>
-                                </div>
-                                <div class="bg-gray-50 p-2 rounded text-center">
-                                    <div class="text-gray-500">索引</div>
-                                    <div class="font-semibold" x-text="(parseInt(imageIndices[tag]) + 1) + '/' + (imageData[tag]?.length || 0)"></div>
-                                </div>
                             </div>
                         </div>
                     </template>
@@ -242,70 +197,45 @@
 
             <!-- 音频标签页 -->
             <div x-show="currentTab === 'audio'" x-transition>
-                <div class="mb-8">
-                    <h2 class="section-title">🔊 音频数据</h2>
-                </div>
-
                 <!-- 音频网格 -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                     <template x-for="tag in audioTags" :key="tag">
-                        <div class="card p-6">
-                            <div class="mb-4">
-                                <h3 class="font-semibold text-gray-800 mb-2" x-text="tag"></h3>
+                        <div class="card p-3">
+                            <div class="mb-2">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <h3 class="font-semibold text-gray-800 text-xs truncate" x-text="tag" :title="tag"></h3>
+                                    <span class="text-xs font-bold text-indigo-600 ml-2 flex-shrink-0" 
+                                          x-text="'#' + (audioData[tag]?.[audioIndices[tag]]?.step || 0)"></span>
+                                </div>
                                 
                                 <!-- Step Slider -->
-                                <div class="mb-4" x-show="audioData[tag]">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <label class="text-xs font-medium text-gray-600">训练步数</label>
-                                        <span class="text-xs font-bold text-indigo-600" 
-                                              x-text="'Step: ' + (audioData[tag]?.[audioIndices[tag]]?.step || 0)"></span>
-                                    </div>
+                                <div x-show="audioData[tag]">
                                     <input type="range" 
                                            x-model="audioIndices[tag]"
                                            :min="0" 
                                            :max="(audioData[tag]?.length || 1) - 1"
                                            class="slider-thumb w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                    <div class="flex justify-between text-xs text-gray-400 mt-1">
-                                        <span>0</span>
-                                        <span x-text="(audioData[tag]?.length || 1) - 1"></span>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- 音频播放器 -->
-                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 mb-3 shadow-sm border border-gray-200">
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-3 mb-2 border border-gray-200">
                                 <audio controls 
                                        controlslist="nodownload"
                                        :src="audioData[tag]?.[audioIndices[tag]]?.data"
-                                       class="w-full mb-3"
-                                       style="filter: saturate(0.8) hue-rotate(230deg);"
+                                       class="w-full mb-2"
+                                       style="filter: saturate(0.8) hue-rotate(230deg); height: 32px;"
                                        x-show="audioData[tag]?.[audioIndices[tag]]">
                                 </audio>
                                 <a :href="audioData[tag]?.[audioIndices[tag]]?.data"
                                    :download="tag.replace(/\//g, '_') + '_' + (audioData[tag]?.[audioIndices[tag]]?.step || 0) + '.wav'"
-                                   class="group relative w-full inline-flex items-center justify-center px-5 py-2.5 bg-white hover:bg-gray-50 border-2 border-indigo-200 hover:border-indigo-400 text-indigo-700 text-sm font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                                   class="group w-full inline-flex items-center justify-center px-3 py-1.5 bg-white hover:bg-gray-50 border border-indigo-200 hover:border-indigo-400 text-indigo-700 text-xs font-semibold rounded transition-all"
                                    x-show="audioData[tag]?.[audioIndices[tag]]">
-                                    <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3.5 h-3.5 mr-1.5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
                                     </svg>
-                                    <span class="group-hover:translate-x-0.5 transition-transform">下载音频文件</span>
+                                    <span>下载</span>
                                 </a>
-                            </div>
-
-                            <!-- 音频信息 -->
-                            <div class="grid grid-cols-3 gap-2 text-xs" x-show="audioData[tag]?.[audioIndices[tag]]">
-                                <div class="bg-gray-50 p-2 rounded text-center">
-                                    <div class="text-gray-500">采样率</div>
-                                    <div class="font-semibold" x-text="Math.round(audioData[tag]?.[audioIndices[tag]]?.sample_rate) + ' Hz'"></div>
-                                </div>
-                                <div class="bg-gray-50 p-2 rounded text-center">
-                                    <div class="text-gray-500">帧数</div>
-                                    <div class="font-semibold" x-text="audioData[tag]?.[audioIndices[tag]]?.length_frames"></div>
-                                </div>
-                                <div class="bg-gray-50 p-2 rounded text-center">
-                                    <div class="text-gray-500">索引</div>
-                                    <div class="font-semibold" x-text="(parseInt(audioIndices[tag]) + 1) + '/' + (audioData[tag]?.length || 0)"></div>
-                                </div>
                             </div>
                         </div>
                     </template>
